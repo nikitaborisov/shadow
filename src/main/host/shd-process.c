@@ -749,6 +749,11 @@ static void _process_handleTimerResult(Process* proc, gdouble elapsedTimeSec) {
     tracker_addProcessingTime(host_getTracker(currentHost), delay);
 }
 
+static void _allocate_and_copy_string(char** dst, const char* src) {
+  *dst = (char*) malloc(sizeof(char) * (1 + strlen(src)));
+  strcpy(*dst, src);
+}
+
 static gint _process_getArguments(Process* proc, gchar** argvOut[]) {
     gchar* threadBuffer;
 
@@ -789,10 +794,10 @@ static gint _process_getArguments(Process* proc, gchar** argvOut[]) {
 
       sprintf(shared_memory_pool_addr, "%p", &shared_memory_pool);
       sprintf(shared_memory_lock_addr, "%p", &shared_memory_lock);
-      argv[argc - 4] = shared_memory_pool_name;
-      argv[argc - 3] = shared_memory_pool_addr;
-      argv[argc - 2] = shared_memory_lock_name;
-      argv[argc - 1] = shared_memory_lock_addr;
+      _allocate_and_copy_string(&(argv[argc - 4]), shared_memory_pool_name);
+      _allocate_and_copy_string(&(argv[argc - 3]), shared_memory_pool_addr);
+      _allocate_and_copy_string(&(argv[argc - 2]), shared_memory_lock_name);
+      _allocate_and_copy_string(&(argv[argc - 1]), shared_memory_lock_addr);
     } else {
       argv = g_new0(gchar*, argc);
       for (gint i = 0; i < argc - 4; i++)

@@ -248,6 +248,12 @@ struct _Process {
     MAGIC_DECLARE;
 };
 
+static void* shared_memory_pool = NULL;
+static char shared_memory_pool_name[] = "--shadow-memory-address";
+static char shared_memory_pool_addr[50];
+static char shared_memory_lock_name[] = "--shadow-lock-address";
+static char shared_memory_lock_addr[50];
+
 static ProcessContext _process_changeContext(Process* proc, ProcessContext from, ProcessContext to) {
     ProcessContext prevContext = PCTX_NONE;
     if(from == PCTX_SHADOW) {
@@ -766,10 +772,30 @@ static gint _process_getArguments(Process* proc, gchar** argvOut[]) {
 
     /* setup for creating new plug-in, i.e. format into argc and argv */
     gint argc = g_queue_get_length(arguments);
-    /* a pointer to an array that holds pointers */
-    gchar** argv = g_new0(gchar*, argc);
 
-    for(gint i = 0; i < argc; i++) {
+    
+    // add four separate strings to command line args
+    // only done for tor processes
+    // --shadow-memory-address {MEM ADDRESS}
+    // --shadow-lock-address {LOCK ADDRESS}
+    gchar** argv;
+    if (strcmp(proc->plugin.name[0].str, "tor") == 0) {
+      argc += 4;
+      /* a pointer to an array that holds pointers */
+      argv = g_new0(gchar*, argc);
+
+      for (gint i = 0; i < argc - 4; i++)
+        argv[i] = g_queue_pop_head(arguments);
+
+      sprintf(shared_memory_pool_addr, "%p", &shared_memory_pool);
+      sprintf(shared_memory_lock_addr, "%p", &shared_memory_lock);
+      argv[argc - 4] = shared_memory_pool_name;
+      argv[argc - 3] = shared_memory_pool_addr;
+      argv[argc - 2] = shared_memory_lock_name;
+      argv[argc - 1] = shared_memory_lock_addr;
+    } else {
+      argv = g_new0(gchar*, argc);
+      for (gint i = 0; i < argc - 4; i++)
         argv[i] = g_queue_pop_head(arguments);
     }
 

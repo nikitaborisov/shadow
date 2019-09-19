@@ -774,6 +774,9 @@ gint main_runShadow(gint argc, gchar* argv[]) {
     Logger* shadowLogger = logger_new(options_getLogLevel(options));
     logger_setDefault(shadowLogger);
 
+    /* initialize mutex here */
+    pthread_mutex_init(&shared_memory_lock, NULL);
+
     /* disable buffering during startup so that we see every message immediately in the terminal */
     logger_setEnableBuffering(shadowLogger, FALSE);
 

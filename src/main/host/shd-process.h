@@ -82,6 +82,7 @@ void process_unref(Process* proc);
 void process_schedule(Process* proc, gpointer nothing);
 void process_continue(Process* proc);
 void process_stop(Process* proc);
+pthread_mutex_t shared_memory_lock;
 
 struct ProcessMigrateArgs {
     pthread_t* t1;

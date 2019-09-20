@@ -800,7 +800,7 @@ static gint _process_getArguments(Process* proc, gchar** argvOut[]) {
       _allocate_and_copy_string(&(argv[argc - 1]), shared_memory_lock_addr);
     } else {
       argv = g_new0(gchar*, argc);
-      for (gint i = 0; i < argc - 4; i++)
+      for (gint i = 0; i < argc; i++)
         argv[i] = g_queue_pop_head(arguments);
     }
 

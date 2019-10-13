@@ -248,11 +248,13 @@ struct _Process {
     MAGIC_DECLARE;
 };
 
-static void* shared_memory_pool = NULL;
 static char shared_memory_pool_name[] = "--shadow-memory-address";
 static char shared_memory_pool_addr[50];
 static char shared_memory_lock_name[] = "--shadow-lock-address";
 static char shared_memory_lock_addr[50];
+static int shared_list_counter = 0;
+static char shared_list_counter_name[] = "--shadow-list-counter-address";
+static char shared_list_counter_addr[50];
 
 static ProcessContext _process_changeContext(Process* proc, ProcessContext from, ProcessContext to) {
     ProcessContext prevContext = PCTX_NONE;
@@ -779,13 +781,14 @@ static gint _process_getArguments(Process* proc, gchar** argvOut[]) {
     gint argc = g_queue_get_length(arguments);
 
     
-    // add four separate strings to command line args
+    // add six separate strings to command line args
     // only done for tor processes
     // --shadow-memory-address {MEM ADDRESS}
     // --shadow-lock-address {LOCK ADDRESS}
+    // --shadow-list-counter {COUNTER ADDRESS}
     gchar** argv;
     if (strcmp(proc->plugin.name[0].str, "tor") == 0) {
-      argc += 4;
+      argc += 6;
       /* a pointer to an array that holds pointers */
       argv = g_new0(gchar*, argc);
 
@@ -794,6 +797,9 @@ static gint _process_getArguments(Process* proc, gchar** argvOut[]) {
 
       sprintf(shared_memory_pool_addr, "%p", &shared_memory_pool);
       sprintf(shared_memory_lock_addr, "%p", &shared_memory_lock);
+      sprintf(shared_list_counter_addr, "%p", &shared_list_counter);
+      _allocate_and_copy_string(&(argv[argc - 6]), shared_list_counter_name);
+      _allocate_and_copy_string(&(argv[argc - 5]), shared_list_counter_addr);
       _allocate_and_copy_string(&(argv[argc - 4]), shared_memory_pool_name);
       _allocate_and_copy_string(&(argv[argc - 3]), shared_memory_pool_addr);
       _allocate_and_copy_string(&(argv[argc - 2]), shared_memory_lock_name);

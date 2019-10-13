@@ -103,6 +103,9 @@ gboolean process_addAtExitCallback(Process* proc, gpointer userCallback, gpointe
  * to hijack control over the flow of execution.
  *****************************************************************/
 
+/* Chunk of shared memory for storing the circuit list. */
+void* shared_memory_pool;
+
 /* memory allocation family */
 
 void* process_emu_malloc(Process* proc, size_t size);

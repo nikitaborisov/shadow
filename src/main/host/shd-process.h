@@ -82,7 +82,6 @@ void process_unref(Process* proc);
 void process_schedule(Process* proc, gpointer nothing);
 void process_continue(Process* proc);
 void process_stop(Process* proc);
-pthread_mutex_t shared_memory_lock;
 
 struct ProcessMigrateArgs {
     pthread_t* t1;
@@ -103,9 +102,6 @@ gboolean process_addAtExitCallback(Process* proc, gpointer userCallback, gpointe
  * to hijack control over the flow of execution.
  *****************************************************************/
 
-/* Chunk of shared memory for storing the circuit list. */
-void* shared_memory_pool;
-
 /* memory allocation family */
 
 void* process_emu_malloc(Process* proc, size_t size);
@@ -118,6 +114,9 @@ void* process_emu_aligned_alloc(Process* proc, size_t alignment, size_t size);
 void* process_emu_valloc(Process* proc, size_t size);
 void* process_emu_pvalloc(Process* proc, size_t size);
 void* process_emu_mmap(Process* proc, void *addr, size_t length, int prot, int flags, int fd, off_t offset);
+void process_shared_memory_lock_init(void);
+void process_shared_memory_pool_malloc(int num_bytes);
+void process_shared_memory_pool_free(void);
 
 /* event family */
 

@@ -248,6 +248,9 @@ struct _Process {
     MAGIC_DECLARE;
 };
 
+/* Chunk of shared memory for storing the circuit list. */
+static void* shared_memory_pool;
+static pthread_mutex_t shared_memory_lock;
 static char shared_memory_pool_name[] = "--shadow-memory-address";
 static char shared_memory_pool_addr[50];
 static char shared_memory_lock_name[] = "--shadow-lock-address";
@@ -2025,6 +2028,17 @@ void* process_emu_mmap(Process* proc, void *addr, size_t length, int prot, int f
     return MAP_FAILED;
 }
 
+void process_shared_memory_lock_init() {
+    pthread_mutex_init(&shared_memory_lock, NULL);
+}
+
+void process_shared_memory_pool_malloc(int num_bytes) {
+    shared_memory_pool = malloc(num_bytes);
+}
+
+void process_shared_memory_pool_free() {
+    free(shared_memory_pool);
+}
 
 /* event family */
 

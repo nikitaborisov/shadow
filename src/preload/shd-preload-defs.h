@@ -140,7 +140,7 @@ PRELOADDEF(return, int, fflush, (FILE *a), a);
 
 PRELOADDEF(return, time_t, time, (time_t *a), a);
 PRELOADDEF(return, int, clock_gettime, (clockid_t a, struct timespec *b), a, b);
-PRELOADDEF(return, int, gettimeofday, (struct timeval* a, struct timezone* b), a, b);
+PRELOADDEF(return, int, gettimeofday, (struct timeval* a, void* b), a, b);
 PRELOADDEF(return, struct tm *, localtime, (const time_t *a), a);
 PRELOADDEF(return, struct tm *, localtime_r, (const time_t *a, struct tm *b), a, b);
 PRELOADDEF(return, int, pthread_getcpuclockid, (pthread_t a, clockid_t *b), a, b);

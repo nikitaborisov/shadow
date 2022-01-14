@@ -5,6 +5,7 @@ find_package(DL REQUIRED)
 include_directories(${DL_INCLUDES} ${IGRAPH_INCLUDES} ${GLIB_INCLUDES})
 
 #add_cflags(-Wno-invalid-noreturn)
+add_cflags(-U_FORTIFY_SOURCE)
 
 ## build the required library for intercepting system and library calls.
 ## create the interpose library, to be set as LD_PRELOAD to intercept functions.
